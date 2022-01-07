@@ -127,7 +127,7 @@ export const ChatContainer = () => {
 
     useEffect(() => {
         chatSocket.current = new WebSocket(
-            `ws://${'production' ? process.env.REACT_APP_WEBSOCKET_SERVER_URL_PRODUCTION : process.env.REACT_APP_WEBSOCKET_SERVER_URL_DEVELOPMENT}/ws/chat/` + "?token=" + window.localStorage.getItem('access_token')
+            `ws://${process.env.NODE_ENV === 'production' ? process.env.REACT_APP_WEBSOCKET_SERVER_URL_PRODUCTION : process.env.REACT_APP_WEBSOCKET_SERVER_URL_DEVELOPMENT}/ws/chat/` + "?token=" + window.localStorage.getItem('access_token')
         )
         ;
         initSocket(chatSocket.current)
