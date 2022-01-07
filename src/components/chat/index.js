@@ -127,14 +127,16 @@ export const ChatContainer = () => {
 
     useEffect(() => {
         chatSocket.current = new WebSocket(
-            'ws://127.0.0.1:8000/ws/chat/' + "?token=" + window.localStorage.getItem('access_token')
-        );
+            `ws://${'production' ? process.env.REACT_APP_WEBSOCKET_SERVER_URL_PRODUCTION : process.env.REACT_APP_WEBSOCKET_SERVER_URL_DEVELOPMENT}/ws/chat/` + "?token=" + window.localStorage.getItem('access_token')
+        )
+        ;
         initSocket(chatSocket.current)
 
         return () => {
             chatSocket.current.close()
         }
-    }, [])
+    }
+, [])
 
     useEffect(() => {
         if (chatSocket.current) {
