@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-conf
+data:
+  env: |
+    SECRET_KEY=M8F;J~%)=\/H,2KLG5)U;L"ERW:]',;'X+9S(-Z{5NLA&VC4^%
+    DEBUG=True
+    DEVELOPMENT_MODE=True
+    DB_ENGINE=django.db.backends.postgresql_psycopg2
+    DB_NAME=postgresdb
+    DB_USER=admin
+    DB_PASSWORD=12345
+    DB_HOST=67.205.186.84
+    DB_PORT=30002
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  labels:
+    app: backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: peterlight/chat_app_django:latest
+          ports:
+            - containerPort: 8000
+          volumeMounts:
+            - name: backend-conf-volume
+              mountPath: /django/chat_server/env
+      volumes:
+        - name: backend-conf-volume
+          configMap:
+            name: backend-conf
+            items:
+              - key: env
+                path: .env
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30001
+  selector:
+    app: backend
