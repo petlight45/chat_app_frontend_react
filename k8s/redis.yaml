@@ -9,9 +9,6 @@ spec:
       command:
         - redis-server
         - "/redis-master/redis.conf"
-      env:
-        - name: MASTER
-          value: "true"
       ports:
         - containerPort: 6379
       resources:
@@ -31,3 +28,16 @@ spec:
         items:
           - key: redis-config
             path: redis.conf
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-external-service
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 6379
+      targetPort: 6379
+      nodePort: 30003
+  selector:
+    app: redis

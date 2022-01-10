@@ -2,9 +2,10 @@
     font-family: 'Roboto', serif;
 }
 
-.full-height {
-    height: 100vh;
+.main-wrapper {
+    min-height: 100vh;
 }
+
 
 .header-bg {
     background: rgb(79, 106, 134);
@@ -36,7 +37,8 @@
 }
 
 .chat-members {
-    width: 15.0rem !important;
+    width: 15.0rem;
+    height: 100vh;
 }
 
 .font-1 {
@@ -139,9 +141,19 @@
 }
 
 .chat-body-wrapper{
-    height: 100vh !important;
+    height: 100vh;
 }
 
 .chat-body{
     overflow: hidden;
+}
+
+@media (max-width: 576px){
+    .chat-members {
+        width: 100%;
+    }
+
+    .main-wrapper{
+        height: initial;
+    }
 }

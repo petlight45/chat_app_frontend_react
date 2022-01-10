@@ -189,8 +189,8 @@ export const ChatContainer = () => {
             currentRoomMessagesFetchError
         }}>
             <div className="">
-                <div className="d-flex full-height">
-                    <div className="chat-members h-100 flex-column pb-3 header-bg d-none d-sm-flex">
+                <div className="d-flex flex-column flex-sm-row main-wrapper">
+                    <div className="chat-members flex-column pb-3 header-bg d-flex">
                         <div className=" members-header header-bg ">
                             <div className="px-3 py-3 text-white ">
                                 <span className="font-1 ">Chat Members</span>
@@ -200,7 +200,7 @@ export const ChatContainer = () => {
                             <ChatMembers/>
                         </div>
                     </div>
-                    <div className="flex-grow-1 chat-body-wrapper h-100 d-flex flex-column ">
+                    <div className="flex-grow-1 chat-body-wrapper d-flex flex-column ">
                         <div className="chat-body-header header-bg ">
                             <div className=" members-header header-bg-2 d-flex justify-content-between">
                                 <ChatTitle/>

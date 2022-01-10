@@ -5,14 +5,16 @@ metadata:
 data:
   env: |
     SECRET_KEY=M8F;J~%)=\/H,2KLG5)U;L"ERW:]',;'X+9S(-Z{5NLA&VC4^%
-    DEBUG=True
-    DEVELOPMENT_MODE=True
+    DEBUG=False
+    DEVELOPMENT_MODE=False
     DB_ENGINE=django.db.backends.postgresql_psycopg2
     DB_NAME=postgresdb
     DB_USER=admin
     DB_PASSWORD=12345
     DB_HOST=67.205.186.84
     DB_PORT=30002
+    REDIS_HOST=67.205.186.84
+    REDIS_PORT=6379
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -37,7 +39,11 @@ spec:
             - containerPort: 8000
           volumeMounts:
             - name: backend-conf-volume
-              mountPath: /django/chat_server/env
+              mountPath: /django/env
+          command: ["/bin/sh","-c"]
+          args:
+            - python manage.py migrate;
+              gunicorn chat_server.wsgi --bind 0.0.0.0:8000;
       volumes:
         - name: backend-conf-volume
           configMap:
@@ -53,8 +59,8 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-    - port: 80
-      targetPort: 80
+    - port: 8000
+      targetPort: 8000
       nodePort: 30001
   selector:
     app: backend
