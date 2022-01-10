@@ -9,7 +9,9 @@ import {createContext, useEffect, useRef, useState} from "react";
 import {fetchAllUsers, fetchCurrentRoomMessages, fetchUserProfile} from "../../config/store/actions";
 import {chatReducer} from "../../config/store/reducers";
 import {SET_CURRENT_ROOM_MESSAGES, SET_CURRENT_ROOM_MESSAGES_EMPTY} from "../../config/store/constants";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import axiosInstance from "../../config/api/axios";
+import fireMessageAlert from "../../helpers/alerts/alertMessage";
 
 export const chatContext = createContext({
     isFetchingProfile: null,
@@ -33,6 +35,7 @@ export const ChatContainer = () => {
     const [sentFirstRoomMessage, setSentFirstRoomMessage] = useState(false)
     const rendered = useRef(false)
     const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     const getMessageBody = () => {
         if (!socket) {
@@ -118,6 +121,22 @@ export const ChatContainer = () => {
                 case "online_users_notification":
                     setOnlineUsers(data)
                     break
+                case "log_user_out":
+                    socket_.close()
+                    fireMessageAlert("Login Error", data.message)
+                    axiosInstance().post('/auth/logout', {
+                        refresh_token: window.localStorage.getItem('refresh_token')
+                    }).then((response) => {
+                            window.localStorage.setItem('access_token', null);
+                            window.localStorage.setItem('refresh_token', null);
+                            navigate('/login', {replace: true})
+                        }
+                    ).catch((err) => {
+                        window.localStorage.setItem('access_token', null);
+                        window.localStorage.setItem('refresh_token', null);
+                        navigate('/login', {replace: true})
+                    });
+                    break
                 default:
                     break
             }
@@ -126,17 +145,17 @@ export const ChatContainer = () => {
     }
 
     useEffect(() => {
-        chatSocket.current = new WebSocket(
-            `ws://${process.env.NODE_ENV === 'production' ? process.env.REACT_APP_WEBSOCKET_SERVER_URL_PRODUCTION : process.env.REACT_APP_WEBSOCKET_SERVER_URL_DEVELOPMENT}/ws/chat/` + "?token=" + window.localStorage.getItem('access_token')
-        )
-        ;
-        initSocket(chatSocket.current)
+            chatSocket.current = new WebSocket(
+                `ws://${process.env.NODE_ENV === 'production' ? process.env.REACT_APP_WEBSOCKET_SERVER_URL_PRODUCTION : process.env.REACT_APP_WEBSOCKET_SERVER_URL_DEVELOPMENT}/ws/chat/` + "?token=" + window.localStorage.getItem('access_token')
+            )
+            ;
+            initSocket(chatSocket.current)
 
-        return () => {
-            chatSocket.current.close()
+            return () => {
+                chatSocket.current.close()
+            }
         }
-    }
-, [])
+        , [])
 
     useEffect(() => {
         if (chatSocket.current) {
