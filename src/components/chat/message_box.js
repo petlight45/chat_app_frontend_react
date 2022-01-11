@@ -51,8 +51,9 @@ export const ChatMessageBox = () => {
                         }
                     }}></textarea>
                 </div>
-                <StyledButton onClick={(e)=>{
+                <StyledButton onClick={(e) => {
                     if (profile && socket && currentRoom && message) {
+                        e.preventDefault()
                         handleSubmitMessage()
                     } else {
                         e.preventDefault()
