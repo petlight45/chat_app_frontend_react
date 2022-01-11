@@ -49,8 +49,8 @@ export const LoginContainer = () => {
 
     return (
         <div className="login-wrapper">
-            <div className="d-flex full-height justify-content-center align-items-start">
-                <div className='form-wrapper py-3 px-5 bg-white'>
+            <div className="d-flex main-wrapper justify-content-center align-items-start">
+                <div className='form-wrapper py-2 px-3 px-md-4 px-lg-5 bg-white'>
                     <div className='form-header text-center'>
                         Continue to Chat App
                     </div>

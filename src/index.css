@@ -14,4 +14,11 @@ code {
 
 :root {
   --custom-blue-1: #3498db;
+  --custom-blue-2: rgba(82, 109, 139, 1);
+  --blue-gradient-1:linear-gradient(
+          90deg
+          , rgb(56, 94, 135) 0%, rgb(40, 57, 102) 50%, rgb(23, 28, 65) 100%);
+  --blue-gradient-2: linear-gradient(
+          90deg
+          , rgba(82, 109, 139, 1) 0%, rgba(80, 95, 136, 1) 50%, rgba(77, 84, 131, 1) 100%);
 }

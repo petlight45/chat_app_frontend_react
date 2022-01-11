@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-conf
+data:
+  env: |
+    SECRET_KEY=M8F;J~%)=\/H,2KLG5)U;L"ERW:]',;'X+9S(-Z{5NLA&VC4^%
+    DEBUG=False
+    DEVELOPMENT_MODE=False
+    DB_ENGINE=django.db.backends.postgresql_psycopg2
+    DB_NAME=postgresdb
+    DB_USER=admin
+    DB_PASSWORD=12345
+    DB_HOST=67.205.186.84
+    DB_PORT=30002
+    REDIS_HOST=67.205.186.84
+    REDIS_PORT=6379
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  labels:
+    app: backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: peterlight/chat_app_django:latest
+          ports:
+            - containerPort: 8000
+          volumeMounts:
+            - name: backend-conf-volume
+              mountPath: /django/env
+          command: ["/bin/sh","-c"]
+          args:
+            - python manage.py migrate;
+              gunicorn chat_server.wsgi --bind 0.0.0.0:8000;
+      volumes:
+        - name: backend-conf-volume
+          configMap:
+            name: backend-conf
+            items:
+              - key: env
+                path: .env
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8000
+      targetPort: 8000
+      nodePort: 30001
+  selector:
+    app: backend
