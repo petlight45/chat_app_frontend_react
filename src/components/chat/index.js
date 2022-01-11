@@ -119,6 +119,7 @@ export const ChatContainer = () => {
                     }
                     break
                 case "online_users_notification":
+                    dispatch((dispatch_, getState) => fetchAllUsers(dispatch_, profile))
                     setOnlineUsers(data)
                     break
                 case "log_user_out":
